@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] Enemy health;
     [SerializeField] int maxHealth = 10;
     public int currentHealth;
 
-    //SET HEALTH
+
+ //SET HEALTH
     private void Start()
     {
         currentHealth = maxHealth; // Set initial health to the maximum health
@@ -17,9 +17,10 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
 
+
     }
 
-    //TAKE DAMAGE
+//TAKE DAMAGE
     public void TakeDamage(int damage)
     {
         // Ensure the damage value is non-negative
@@ -39,7 +40,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    //DIE
+//DIE
     private void Die()
     {
         // Perform any actions you want when the enemy dies
