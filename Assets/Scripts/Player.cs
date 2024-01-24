@@ -8,22 +8,23 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed, speed;
     private Rigidbody rigidbody;
+    private Vector2 input;
     private bool hidden = false;
     private bool seen = false;
 
-    // Start is called before the first frame update
+// Start is called before the first frame update
     void Start()
     {
-
+        rigidbody = GetComponent<Rigidbody>();
     }
 
-    //UPDATE MOVEMENT INPUT
+//UPDATE MOVEMENT INPUT
     private void Update()
     {
-        input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        input = new Vector2(UnityEngine.Input.GetAxis("Horizontal"), UnityEngine.Input.GetAxis("Vertical"));
     }
 
-    //FRAME UPDATE FOR PHSYICS BASED MOVEMENT
+//FRAME UPDATE FOR PHSYICS BASED MOVEMENT
     private void FixedUpdate()
     {
         //TRANSLATION
@@ -38,20 +39,20 @@ public class Player : MonoBehaviour
 //ATTACK
     void Attack()
     {
-        if (hidden == true && )
+        if (hidden == true && UnityEngine.Input.GetKeyDown("F"))
         {
-            Enemy enemyHealth = GetComponentInParent<currentHealth>();
 
-            if (enemyHealth != null)
-            {
 
-                // Check if enemyHealth exists
-                if (enemyHealth != null)
-                {
-                    //5 points of damage to the enemy
-                    enemyHealth.TakeDamage(5);
-                }
-            }
+            //if (currentHealth != null)
+            //{
+
+            //    // Check if enemyHealth exists
+            //    if (currentHealth != null)
+            //    {
+            //        //10 points of damage to the enemy
+            //        currentHealth.TakeDamage(10);
+            //    }
+            //}
         }
     }
 }
