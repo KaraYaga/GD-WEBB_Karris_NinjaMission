@@ -8,7 +8,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class Player : MonoBehaviour
 {
-//Player Singleton (God Program announces the current Chosen One on awake)
+    //Player Singleton (God Program announces the current Chosen One on awake)
     public static Player playerInstance;
 
     [SerializeField] float speed = 50f;
@@ -21,11 +21,13 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject unseen;
     [SerializeField] GameObject attack;
 
-//Sight Status
+    //Sight Status
     private bool hidden = false;
     private bool canAttack = false;
 
-//AWAKE SINGLETON
+    Enemy targetEnemy;
+
+    //AWAKE SINGLETON
 
     private void Awake()
     {
@@ -50,11 +52,13 @@ public class Player : MonoBehaviour
         input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
         checkIfHidden();
+        checkIfFacingEnemy();
 
         if (Input.GetKeyDown(KeyCode.F))
         {
             Attack();
         }
+
         if (hidden == true && canAttack == true)
         {
             attack.gameObject.SetActive(true);
@@ -77,8 +81,7 @@ public class Player : MonoBehaviour
 //Dot Product HIDDEN or SEEN (Comparing vectors and directions)
     void checkIfHidden()
     {
-
-        foreach(Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
+        foreach (Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
         {
             //Checking if Hidden or Seen
             Vector3 enemyToPlayer;
@@ -87,24 +90,19 @@ public class Player : MonoBehaviour
 
             if (Vector3.Dot(enemyToPlayer, enemy.transform.forward) < 0)
             {
-                Debug.Log("The enemy doesn't see you!");
-
                 hidden = true;
                 unseen.gameObject.SetActive(true);
             }
             else
             {
-                Debug.Log("TMP: You are seen!");
-
                 hidden = false;
                 seen.gameObject.SetActive(true);
             }
         }
     }
-        
 
-//ATTACK
-    void Attack()
+//Dot Product to see if Facing Enemy and Can Attack or NOT
+    void checkIfFacingEnemy()
     {
         foreach (Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
         {
@@ -114,20 +112,32 @@ public class Player : MonoBehaviour
                 if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0)
                 {
                     canAttack = true;
-                    Debug.Log("TMP: You can attack!");
-
-                    if (enemy.currentHealth > 0)
-                    {
-                        //10 points of damage to the enemy
-                        enemy.TakeDamage(10);
-                    }
+                    targetEnemy = enemy;
                 }
-
                 else
                 {
                     Debug.Log("TMP: You cannot attack!");
                 }
             }
         }
-    }       
+    }
+
+//ATTACK
+
+void Attack()
+    {
+       if (canAttack == true && hidden == true && targetEnemy != null) 
+       {
+
+          if (targetEnemy.currentHealth > 0)
+          {
+            //10 points of damage to the enemy
+            targetEnemy.TakeDamage(10);
+          }
+       }
+       else
+       {
+          Debug.Log("TMP: You cannot attack!");
+       }
+    }
 }
