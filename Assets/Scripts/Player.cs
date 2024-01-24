@@ -63,6 +63,10 @@ public class Player : MonoBehaviour
         {
             attack.gameObject.SetActive(true);
         }
+        else
+        {
+            attack.gameObject.SetActive(false);
+        }
     }
 
 //FRAME UPDATE FOR PHSYICS BASED MOVEMENT
@@ -109,14 +113,10 @@ public class Player : MonoBehaviour
             if (hidden == true)
             {
                 //Checking if Player is looking at enemy
-                if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0)
+                if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0 && Vector3.Distance(enemy.transform.position, transform.position) < 200)
                 {
                     canAttack = true;
                     targetEnemy = enemy;
-                }
-                else
-                {
-                    Debug.Log("TMP: You cannot attack!");
                 }
             }
         }
@@ -134,10 +134,6 @@ void Attack()
             //10 points of damage to the enemy
             targetEnemy.TakeDamage(10);
           }
-       }
-       else
-       {
-          Debug.Log("TMP: You cannot attack!");
        }
     }
 }
