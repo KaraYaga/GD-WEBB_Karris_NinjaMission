@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
+using System;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Player : MonoBehaviour
 {
 //Player Singleton (God Program announces the current Chosen One on awake)
     public static Player playerInstance;
-
-    //Enemy being targeted for sneak attack
-    [SerializeField] Enemy targetEnemy;
 
     [SerializeField] float speed = 50f;
     [SerializeField] float rotationSpeed = 50f;
@@ -17,8 +17,13 @@ public class Player : MonoBehaviour
     private Rigidbody _rigidbody;
     private Vector2 input;
 
+    [SerializeField] GameObject seen;
+    [SerializeField] GameObject unseen;
+    [SerializeField] GameObject attack;
+
 //Sight Status
     private bool hidden = false;
+    private bool canAttack = false;
 
 //AWAKE SINGLETON
 
@@ -31,6 +36,12 @@ public class Player : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+
+        // Popups inactive
+        seen.gameObject.SetActive(false);
+        unseen.gameObject.SetActive(false);
+        attack.gameObject.SetActive(false);
+
     }
 
 //UPDATE MOVEMENT INPUT
@@ -43,6 +54,10 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             Attack();
+        }
+        if (hidden == true && canAttack == true)
+        {
+            attack.gameObject.SetActive(true);
         }
     }
 
@@ -62,46 +77,57 @@ public class Player : MonoBehaviour
 //Dot Product HIDDEN or SEEN (Comparing vectors and directions)
     void checkIfHidden()
     {
-        //Checking if Hidden or Seen
-        Vector3 enemyToPlayer;
 
-        enemyToPlayer = (transform.position - targetEnemy.transform.position).normalized;
-
-        if (Vector3.Dot(enemyToPlayer, targetEnemy.transform.forward) < 0)
+        foreach(Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
         {
-            Debug.Log("The enemy doesn't see you!");
+            //Checking if Hidden or Seen
+            Vector3 enemyToPlayer;
 
-            hidden = true;
-        }
-        else
-        {
-            Debug.Log("You are seen!");
+            enemyToPlayer = (transform.position - enemy.transform.position).normalized;
 
-            hidden = false;
+            if (Vector3.Dot(enemyToPlayer, enemy.transform.forward) < 0)
+            {
+                Debug.Log("The enemy doesn't see you!");
+
+                hidden = true;
+                unseen.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("TMP: You are seen!");
+
+                hidden = false;
+                seen.gameObject.SetActive(true);
+            }
         }
     }
+        
 
 //ATTACK
     void Attack()
     {
-        if (hidden == true)
+        foreach (Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
         {
-            //Checking if Player is looking at enemy
-            if (Vector3.Dot(targetEnemy.transform.forward , transform.forward) > 0)
+            if (hidden == true)
             {
-                Debug.Log("You can attack!");
-
-                if (targetEnemy.currentHealth > 0)
+                //Checking if Player is looking at enemy
+                if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0)
                 {
-                    //10 points of damage to the enemy
-                    targetEnemy.TakeDamage(10);
+                    canAttack = true;
+                    Debug.Log("TMP: You can attack!");
 
+                    if (enemy.currentHealth > 0)
+                    {
+                        //10 points of damage to the enemy
+                        enemy.TakeDamage(10);
+                    }
+                }
+
+                else
+                {
+                    Debug.Log("TMP: You cannot attack!");
                 }
             }
-            else
-            {
-                Debug.Log("You cannot attack!");
-            }
         }
-    }
+    }       
 }
