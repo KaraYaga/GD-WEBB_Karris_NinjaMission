@@ -204,7 +204,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a5ed3c0e4229a439cd3eddd291bc0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 0}
   maxHealth: 10
   currentHealth: 0
 --- !u!1 &264202727
@@ -648,6 +647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 210b0cdb35844b34f82cfa0049396957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetEnemy: {fileID: 251018190}
   speed: 1000
   rotationSpeed: 100
 --- !u!1 &1677463384
@@ -845,7 +845,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a5ed3c0e4229a439cd3eddd291bc0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 0}
   maxHealth: 10
   currentHealth: 0
 --- !u!1001 &5579768245588911923
@@ -929,7 +928,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05a5ed3c0e4229a439cd3eddd291bc0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 0}
   maxHealth: 10
   currentHealth: 0
 --- !u!1660057539 &9223372036854775807

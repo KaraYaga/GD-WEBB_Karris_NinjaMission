@@ -8,8 +8,8 @@ public class Player : MonoBehaviour
 //Player Singleton (God Program announces the current Chosen One on awake)
     public static Player playerInstance;
 
-//Enemy being targeted for sneak attack
-    private Enemy targetEnemy;
+    //Enemy being targeted for sneak attack
+    [SerializeField] Enemy targetEnemy;
 
     [SerializeField] float speed = 50f;
     [SerializeField] float rotationSpeed = 50f;
@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
 
         checkIfHidden();
 
-        if (Input.GetKeyDown("F"))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             Attack();
         }
@@ -69,10 +69,14 @@ public class Player : MonoBehaviour
 
         if (Vector3.Dot(enemyToPlayer, targetEnemy.transform.forward) < 0)
         {
+            Debug.Log("The enemy doesn't see you!");
+
             hidden = true;
         }
         else
         {
+            Debug.Log("You are seen!");
+
             hidden = false;
         }
     }
@@ -83,16 +87,20 @@ public class Player : MonoBehaviour
         if (hidden == true)
         {
             //Checking if Player is looking at enemy
-
-
-
-
-
-            if (targetEnemy.currentHealth > 0)
+            if (Vector3.Dot(targetEnemy.transform.forward , transform.forward) > 0)
             {
-                //10 points of damage to the enemy
-                targetEnemy.TakeDamage(10);
-              
+                Debug.Log("You can attack!");
+
+                if (targetEnemy.currentHealth > 0)
+                {
+                    //10 points of damage to the enemy
+                    targetEnemy.TakeDamage(10);
+
+                }
+            }
+            else
+            {
+                Debug.Log("You cannot attack!");
             }
         }
     }
