@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
 
     }
 
-//UPDATE MOVEMENT INPUT
+//UPDATE MOVEMENT INPUT AND POP UPS STATUS
     private void Update()
     {
         input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -59,14 +59,25 @@ public class Player : MonoBehaviour
             Attack();
         }
 
-        if (hidden == true && canAttack == true)
+        // Activate and deactivate pop-ups based on conditions
+        if (hidden)
         {
-            attack.gameObject.SetActive(true);
+            unseen.gameObject.SetActive(true);
+
+            if (canAttack)
+            {
+                attack.gameObject.SetActive(true);
+                seen.gameObject.SetActive(false);
+                unseen.gameObject.SetActive(true);
+            }
+            else
+            {
+                attack.gameObject.SetActive(false);
+                seen.gameObject.SetActive(true);
+                unseen.gameObject.SetActive(false);
+            }
         }
-        else
-        {
-            attack.gameObject.SetActive(false);
-        }
+
     }
 
 //FRAME UPDATE FOR PHSYICS BASED MOVEMENT
@@ -97,7 +108,7 @@ public class Player : MonoBehaviour
                 hidden = true;
                 unseen.gameObject.SetActive(true);
             }
-            else
+            if (Vector3.Distance(enemy.transform.position, transform.position) < 300)
             {
                 hidden = false;
                 seen.gameObject.SetActive(true);
@@ -108,12 +119,14 @@ public class Player : MonoBehaviour
 //Dot Product to see if Facing Enemy and Can Attack or NOT
     void checkIfFacingEnemy()
     {
+        canAttack = false; // Reset canAttack at the beginning
+
         foreach (Enemy enemy in GameObject.FindObjectsOfType(typeof(Enemy)))
         {
             if (hidden == true)
             {
                 //Checking if Player is looking at enemy
-                if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0 && Vector3.Distance(enemy.transform.position, transform.position) < 200)
+                if (Vector3.Dot(enemy.transform.forward, transform.forward) > 0 && Vector3.Distance(enemy.transform.position, transform.position) < 150)
                 {
                     canAttack = true;
                     targetEnemy = enemy;
@@ -124,16 +137,21 @@ public class Player : MonoBehaviour
 
 //ATTACK
 
-void Attack()
+    void Attack()
     {
-       if (canAttack == true && hidden == true && targetEnemy != null) 
-       {
+        if (hidden && canAttack && targetEnemy != null)
+        {
+            // Check if the targetEnemy is within attack range
+            float distanceToEnemy = Vector3.Distance(targetEnemy.transform.position, transform.position);
 
-          if (targetEnemy.currentHealth > 0)
-          {
-            //10 points of damage to the enemy
-            targetEnemy.TakeDamage(10);
-          }
-       }
+            if (distanceToEnemy < 200)
+            {
+                if (targetEnemy.currentHealth > 0)
+                {
+                    // Deal damage to the enemy
+                    targetEnemy.TakeDamage(10);
+                }
+            }
+        }
     }
 }
